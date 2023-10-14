@@ -65,5 +65,11 @@ public class UIManager : MonoBehaviour
         // GameScreen.SetActive(true);
     }
 
+    public void returnToMain()
+    {
+        MainScreen.SetActive(true);
+        LayoutScreen.SetActive(false);
+    }
+
 
 }

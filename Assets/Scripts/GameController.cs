@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using SimpleJSON;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class CardData
@@ -18,7 +19,8 @@ public class CardData
 public class GameController : MonoBehaviour
 {
     [Header("Cards")]
-    public GameObject card, prevCard, currCard;
+    public GameObject card;
+    GameObject prevCard, currCard;
     [Header("Card Textures")]
     public List<Sprite> cardVariants;
     [Header("Cards List")]
@@ -29,15 +31,33 @@ public class GameController : MonoBehaviour
     [Header("Generic Card Sprite")]
     public Sprite genericTex;
     [Header("UserInterface")]
-    public int turnsTaken, score;
+    int turnsTaken, score;
     public Text turnText, scoreText;
     public GameObject loadingPanel;
+    [Header("Sound")]
+    public AudioClip[] sounds;
+    int counter;
+    bool check;
 
+    public void Update()
+    {
+        int maxScore = ((rows * cols) / 2)*20;
+        if(score >= maxScore && check==false)
+        {
+            Debug.Log("Game Over");
+            // Sounds.playSound(2);
+            this.gameObject.GetComponent<AudioSource>().clip = sounds[2];
+            this.gameObject.GetComponent<AudioSource>().Play();
+            check = true;
+            SceneManager.LoadSceneAsync(0);
 
+        }
+    }
     private void Start()
     {
         loadingPanel.SetActive(true);
-
+        rows = PlayerPrefs.GetInt("rows");
+        cols = PlayerPrefs.GetInt("cols");
         string filepath = Application.persistentDataPath + "/GameData.json";
         if (File.Exists(filepath))
         {
@@ -131,6 +151,9 @@ public class GameController : MonoBehaviour
     public void SpriteBtn()
     {
         setTexts();
+        this.gameObject.GetComponent<AudioSource>().clip = sounds[0];
+        this.gameObject.GetComponent<AudioSource>().Play();
+       // Sounds.transform.GetChild(0).GetComponent<AudioSource>().Play();
         turnText.text = turnsTaken.ToString();
         GameObject BtnPressed =  EventSystem.current.currentSelectedGameObject;
         BtnPressed.GetComponent<Image>().sprite = carddetails.Find(card => card.card == BtnPressed).Tex;
@@ -166,6 +189,14 @@ public class GameController : MonoBehaviour
 
                 score = score + 20;
                 setTexts();
+
+                this.gameObject.GetComponent<AudioSource>().clip = sounds[1];
+                this.gameObject.GetComponent<AudioSource>().Play();
+            }
+            else
+            {
+                this.gameObject.GetComponent<AudioSource>().clip = sounds[3];
+                this.gameObject.GetComponent<AudioSource>().Play();
             }
         }
       
