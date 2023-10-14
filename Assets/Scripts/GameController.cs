@@ -49,9 +49,15 @@ public class GameController : MonoBehaviour
             this.gameObject.GetComponent<AudioSource>().clip = sounds[2];
             this.gameObject.GetComponent<AudioSource>().Play();
             check = true;
-            SceneManager.LoadSceneAsync(0);
-
+            StartCoroutine(loadMain());
         }
+    }
+
+    IEnumerator loadMain()
+    {
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadSceneAsync(0);
+
     }
     private void Start()
     {
@@ -205,7 +211,7 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
         card.GetComponent<Image>().sprite = genericTex;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         checkMatch();
 
